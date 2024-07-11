@@ -2,9 +2,15 @@
 
 #include "../include/files.h"
 
-string_t files_read(const char* path)
+string_t* files_read(const char* path)
 {
     FILE* file = fopen(path, "r");
+    if (file == NULL)
+    {
+        printf("Can not open the file\n");
+        exit(-1);
+    }
+
     size_t soiz = 0;
 
     while(fgetc(file) != EOF)
@@ -13,21 +19,19 @@ string_t files_read(const char* path)
     fclose(file);
     file = fopen(path, "r");
 
-    string_t res;
+    string_t* res = malloc(sizeof(string_t));
 
-    if (file == NULL)
+    res->data = malloc(soiz * sizeof(char));
+    if (res->data == NULL)
     {
-        res.data = NULL;
-        res.size = 0;
-
-        return res;
+        printf("Can not allocate memory for string\n");
+        exit(0);
     }
 
-    res.data = malloc(soiz * sizeof(char));
-    fread(res.data, sizeof(char), soiz, file);
+    fread(res->data, sizeof(char), soiz, file);
 
-    res.data[soiz - 1] = 0;
-    res.size = soiz;
+    res->data[soiz - 1] = 0;
+    res->size = soiz;
 
     fclose(file);
     return res;    

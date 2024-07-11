@@ -11,13 +11,16 @@ typedef struct
 
 typedef struct 
 {
-    string_t* data;
+    string_t** data;
     size_t size;
 } text_t;
 
-string_t strings_construct(const char*);
-string_t strings_recountSize(string_t str);
+string_t* strings_construct(const char*);
+string_t* strings_recountSize(string_t* str);
 
-text_t strings_strToText(string_t str);
+text_t* strings_strToText(string_t* str);
+
+void strings_freeString(string_t* str);
+void strings_freeText(text_t* text);
 
 #endif
