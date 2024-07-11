@@ -11,7 +11,15 @@ typedef struct
 
     size_t cursorX;
     size_t cursorY;
+
+    size_t startX;
+    size_t startY;
+
 } context_t;
+
+extern context_t context;
+
+context_t* graphics_getContext(void);
 
 void graphics_init(void);
 void graphics_hello(void);
