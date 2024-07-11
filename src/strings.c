@@ -1,49 +1,63 @@
 #include "../include/strings.h"
 #include <memory.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-#define BUF_SIZE 128
+#define BUF_SIZE 1024
 
-string_t strings_recountSize(string_t str)
+string_t* strings_recountSize(string_t* str)
 {
-    for(str.size = 0; str.data[str.size]; str.size++);
+    for(str->size = 0; str->data[str->size]; str->size++);
     return str;
 }
 
-string_t strings_construct(const char* data)
+string_t* strings_construct(const char* data)
 {
-    string_t res;
+    string_t* res = malloc(sizeof(string_t));
     size_t soiz = strlen(data);
 
-    res.data = malloc(sizeof(char) * soiz);
-    memcpy(res.data, data, soiz);
+    res->data = malloc(sizeof(char) * soiz);
+    if (res->data == NULL)
+    {
+        printf("Can not allocate memory for string\n");
+        exit(-1);
+    }
+
+    //memcpy(res->data, data, soiz);
+    strcpy(res->data, data);
 
     return strings_recountSize(res);
 }
 
 
-text_t strings_strToText(string_t str)
+text_t* strings_strToText(string_t* str)
 {
-    text_t text;
-    text.size = 1;
+    text_t* text = malloc(sizeof(text_t));
+    text->size = 1;
 
-    for (size_t i = 0; i < str.size; i++)
-        if (str.data[i] == '\n')
-            ++text.size;
+    for (size_t i = 0; i < str->size; i++)
+        if (str->data[i] == '\n')
+            ++text->size;
 
-    text.data = malloc(sizeof(string_t) * text.size);
-    char* buf = malloc(sizeof(char) * BUF_SIZE);
+    text->data = malloc(sizeof(string_t) * text->size);
+    if (text->data == NULL) 
+    {
+        printf("Can not allocate memory for text_t text\n");
+        exit(-1);
+    }
+
+    char buf[BUF_SIZE] = {0};
 
     size_t current = 0;
-    for(size_t start = 0, end = 0; end <= str.size; ++end)
+    for(size_t start = 0, end = 0; end <= str->size; ++end)
     {
-        if (str.data[end] != '\n' && str.data[end] != 0)
+        if (str->data[end] != '\n' && str->data[end] != 0)
             continue;
 
-        memcpy(buf, str.data + start, end - start);
+        memcpy(buf, str->data + start, end - start);
         buf[end - start] = 0;
 
-        text.data[current] = strings_construct(buf);
+        text->data[current] = strings_construct(buf);
 
         start = end + 1;
         ++current;
@@ -51,3 +65,19 @@ text_t strings_strToText(string_t str)
  
     return text;
 }
+
+
+void strings_freeString(string_t* str)
+{
+    free(str->data);
+    free(str);
+}
+
+void strings_freeText(text_t* text)
+{
+    for(size_t i = 0; i < text->size; i++)
+        strings_freeString(text->data[i]);
+    free(text->data);
+}
+
+#undef BUF_SIZE

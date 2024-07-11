@@ -3,6 +3,6 @@
 
 #include "../include/strings.h"
 
-string_t files_read(const char*);
+string_t* files_read(const char*);
 
 #endif

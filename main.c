@@ -5,13 +5,17 @@
 
 int main()
 {
-    string_t str = files_read("../text");
+    string_t* str = files_read("../text");
 
-    text_t text = strings_strToText(str);
-    printf("lines count = %zu\n", text.size);
+    text_t* text = strings_strToText(str);
 
-    for (size_t i = 0; i < text.size; i++) 
-    {
-        printf("line %zu:\t %s \t soiz: %zu \n", i, text.data[i].data, text.data[i].size);
-    }
+    graphics_init();
+    graphics_displayText(*text);
+    getchar();
+    graphics_close();
+
+    strings_freeString(str);
+    strings_freeText(text);
 }
+
+
