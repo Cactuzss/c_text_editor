@@ -16,7 +16,7 @@ string_t* strings_construct(const char* data)
     string_t* res = malloc(sizeof(string_t));
     size_t soiz = strlen(data);
 
-    res->data = malloc(sizeof(char) * soiz);
+    res->data = malloc(sizeof(char) * soiz + 1);
     if (res->data == NULL)
     {
         printf("Can not allocate memory for string\n");
@@ -26,6 +26,7 @@ string_t* strings_construct(const char* data)
     //memcpy(res->data, data, soiz);
     strcpy(res->data, data);
 
+    res->data[soiz] = 0;
     return strings_recountSize(res);
 }
 
@@ -55,6 +56,7 @@ text_t* strings_strToText(string_t* str)
             continue;
 
         memcpy(buf, str->data + start, end - start);
+
         buf[end - start] = 0;
 
         text->data[current] = strings_construct(buf);

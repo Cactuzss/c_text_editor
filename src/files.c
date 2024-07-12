@@ -18,6 +18,11 @@ string_t* files_read(const char* path)
    
     fclose(file);
     file = fopen(path, "r");
+    if (file == NULL)
+    {
+        printf("Can not open the file\n");
+        exit(-1);
+    }
 
     string_t* res = malloc(sizeof(string_t));
 
