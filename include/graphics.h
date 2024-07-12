@@ -15,6 +15,8 @@ typedef struct
     size_t startX;
     size_t startY;
 
+    size_t lowerLineOffset; 
+
 } context_t;
 
 extern context_t context;

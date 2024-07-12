@@ -1,6 +1,8 @@
 #include "../include/graphics.h"
 #include <ncurses.h>
 
+#define LOWERLINE 5
+
 context_t context;
 
 void graphics_init(void)
@@ -10,7 +12,13 @@ void graphics_init(void)
     
     context.startX = 0;
     context.startY = 0;
+
+    context.lowerLineOffset = LOWERLINE;
+
+    context.rows -= context.lowerLineOffset;
 }
+
+#undef LOWERLINE
 
 context_t* graphics_getContext(void)
 {
