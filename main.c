@@ -2,16 +2,50 @@
 #include "include/graphics.h"
 #include "include/strings.h"
 #include "include/files.h"
+#include "include/charList.h"
 
 int normalControls(const char c);
-
 
 // context_t context; 
 text_t* text;
 
-int main(int argc, char* argv[])
+int main()
 {
+    charList_t* lst = charlist_construct(charnode_construct("brown fox jumps over the lazy dog"));
 
+    char toFront[] = "A quick ";
+    for (int i = sizeof(toFront) / sizeof(toFront[0]) - 1; i >= 0; i--)
+        charlist_push_front(lst, toFront[i]);
+
+    char toBack[] = " lazy dog";
+    for (size_t i = 0; i < sizeof(toBack) / sizeof(toBack[0]); i++)
+        charlist_push_back(lst, toBack[i]);
+
+
+    printf("size = %zu;  strlen = %zu\t", lst->size, lst->strlen);
+    charnode_print(lst->head);
+
+    charNode_t* it = lst->head;
+    for(size_t i = 0; i < lst->size; i++)
+    {
+        printf("Block №%zu; size = %d\t", i, it->size);    
+        for (size_t j = 0; j < it->size; j++) printf("%c", it->data[j]);
+        printf("\n");
+        it = it->next;
+    }   
+
+    printf("\n");
+    for(size_t i = 0; i < lst->strlen; i++)
+    {
+        char* c = charlist_at(lst, i);
+        printf("%c", *c);
+    }
+
+    charlist_free(lst);
+}
+
+int m2in(int argc, char* argv[])
+{
     if (argc != 2)
     {
         printf("required path to file\n");
@@ -96,6 +130,10 @@ int normalControls(const char c)
                 --context.cursorX;
             }
             break;  
+
+        case 'i':
+            context.state = INSERTMODE;
+            break;
     }
     return 0;  
 }
