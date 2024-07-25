@@ -8,22 +8,28 @@ int normalControls(const char c);
 
 // context_t context; 
 text_t* text;
-
+#define arraySize(arr) (sizeof(arr) / sizeof(arr[0]))
 int main()
 {
-    charList_t* lst = charlist_construct(charnode_construct("brown fox jumps over the lazy dog"));
+    charList_t* lst = charlist_construct(charnode_construct("brown fox the"));
 
     char toFront[] = "A quick ";
-    for (int i = sizeof(toFront) / sizeof(toFront[0]) - 1; i >= 0; i--)
+    for (int i = arraySize(toFront) - 1; i >= 0; i--)
         charlist_push_front(lst, toFront[i]);
 
     char toBack[] = " lazy dog";
-    for (size_t i = 0; i < sizeof(toBack) / sizeof(toBack[0]); i++)
+    for (size_t i = 0; i < arraySize(toBack) - 1; i++)
         charlist_push_back(lst, toBack[i]);
 
+    char toInsert[] = "jumps over ";
+    size_t start = arraySize(toFront) + arraySize(toBack);
+    for(size_t i = 0; i < arraySize(toInsert); i++)
+        charlist_insert(lst, start + i, toInsert[i]);
 
-    printf("size = %zu;  strlen = %zu\t", lst->size, lst->strlen);
-    charnode_print(lst->head);
+    for(size_t i = 0; i < 6; i++)           // 6 = "quick ".size()
+        charlist_remove(lst, 2);            // 2 if position of quick
+
+    printf("size = %zu;  strlen = %zu\t\n", lst->size, lst->strlen);
 
     charNode_t* it = lst->head;
     for(size_t i = 0; i < lst->size; i++)
@@ -43,6 +49,7 @@ int main()
 
     charlist_free(lst);
 }
+#undef arraySize
 
 int m2in(int argc, char* argv[])
 {

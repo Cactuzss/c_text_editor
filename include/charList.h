@@ -34,6 +34,7 @@ char* charlist_at(charList_t*, size_t);
 void charlist_push_front(charList_t*, char);
 void charlist_push_back(charList_t*, char);
 void charlist_insert(charList_t*, size_t, char);
+void charlist_remove(charList_t*, size_t);
 
 #undef CHAR_ALIGNMENT
 #endif

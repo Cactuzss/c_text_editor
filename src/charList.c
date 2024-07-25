@@ -1,4 +1,6 @@
 #include "../include/charList.h"
+#include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #define OUT_OF_MEMORY(ptr, str) if (ptr == NULL) { printf(str); exit(-1); };
@@ -163,8 +165,95 @@ void charlist_push_back(charList_t* cl, char c)
     cl->strlen++;
 }
 
+void charlist_insert(charList_t* cl, size_t ind, char c)
+{
+    charNode_t* it = cl->head;
+    size_t past = 0;
 
-void charlist_insert(charList_t* cl, size_t ind, char c);
+    for (size_t i = 0; i <= ind && i < cl->strlen; i++ )
+    {
+        if (i + it->size - 1 < ind)
+        {
+            --i;
+            i += it->size;
+            past += it->size;
+            it = it->next;
+
+            continue;
+        }
+    }
+
+    ind -= past;
+    
+    if (it->size >= CHAR_ALIGNMENT)
+    {
+        charNode_t* newNode = malloc(sizeof(charNode_t));
+        memset(newNode, 0, sizeof(charNode_t));
+
+        size_t offset = CHAR_ALIGNMENT - sizeof(int32_t);
+
+        newNode->next = it->next;
+        it->next = newNode;
+
+        (*((int32_t*)(newNode->data))) = (*((int32_t*)(it->data + offset)));
+        newNode->size = sizeof(int32_t);
+
+        cl->size++;
+
+        *((int32_t*)(it->data + offset)) = 0;
+        it->size = offset; 
+        
+        if (ind > offset)
+        {
+            it = it->next;
+            ind -= offset;
+        }
+    }
+
+    for(int i = it->size - 1; i >= 0 && i >= ind; i--)
+        it->data[i + 1] = it->data[i];
+
+    it->data[ind] = c;
+    it->size++;
+
+    cl->strlen++;
+};
+
+void charlist_remove(charList_t* cl, size_t ind)
+{
+    charNode_t* it = cl->head;
+    size_t past = 0;
+
+    for (size_t i = 0; i <= ind && i < cl->strlen; i++ )
+    {
+        if (i + it->size - 1 < ind)
+        {
+            --i;
+            i += it->size;
+            past += it->size;
+            it = it->next;
+
+            continue;
+        }
+    }
+
+    ind -= past;
+
+    if (ind == it->size - 1)
+    {
+        it->data[it->size] = 0;
+        it->size--;
+        cl->strlen--;
+        return;
+    }       
+
+    for(size_t i = ind; i < it->size - 1; i++)
+        it->data[i] = it->data[i + 1];
+
+    it->size--;
+    cl->strlen--;
+
+}
 
 #undef CHAR_ALIGNMENT
 #undef OUT_OF_MEMORY
