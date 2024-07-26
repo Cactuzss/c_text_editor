@@ -2,6 +2,7 @@
 #define STRINGS_H
 
 #include <stdlib.h>
+#include "../include/charList.h"
 
 typedef struct 
 {
@@ -11,7 +12,7 @@ typedef struct
 
 typedef struct 
 {
-    string_t** data;
+    charList_t** data;
     size_t size;
 } text_t;
 

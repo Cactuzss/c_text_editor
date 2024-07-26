@@ -4,14 +4,13 @@
 #include "include/files.h"
 
 int normalControls(const char c);
-
+int insertControls(const char c);
 
 // context_t context; 
 text_t* text;
 
 int main(int argc, char* argv[])
 {
-
     if (argc != 2)
     {
         printf("required path to file\n");
@@ -36,7 +35,6 @@ int main(int argc, char* argv[])
 
 }
 
-
 int normalControls(const char c)
 {
     switch (c) 
@@ -52,9 +50,9 @@ int normalControls(const char c)
         case 'k': 
             if (context.cursorY != 0) 
             {
-                if (context.cursorX >= text->data[context.cursorY - 1]->size)
+                if (context.cursorX >= text->data[context.cursorY - 1]->strlen)
                 {
-                    context.cursorX = text->data[context.cursorY - 1]->size == 0 ? 0 : text->data[context.cursorY - 1]->size - 1;
+                    context.cursorX = text->data[context.cursorY - 1]->strlen == 0 ? 0 : text->data[context.cursorY - 1]->strlen - 1;
                     context.startX = 0;
                 }
                 --(context.cursorY); 
@@ -70,9 +68,9 @@ int normalControls(const char c)
             {
                 if (context.cursorY + 1 < text->size)
                 {
-                    if (context.cursorX >= text->data[context.cursorY + 1]->size)
+                    if (context.cursorX >= text->data[context.cursorY + 1]->strlen)
                     {
-                        context.cursorX = text->data[context.cursorY + 1]->size == 0 ? 0 : text->data[context.cursorY + 1]->size - 1;
+                        context.cursorX = text->data[context.cursorY + 1]->strlen == 0 ? 0 : text->data[context.cursorY + 1]->strlen - 1;
                         context.startX = 0;
                     }
                     ++(context.cursorY); 
@@ -88,7 +86,7 @@ int normalControls(const char c)
             if (context.cursorY + context.startY >= text->size)
                 break;
 
-            if (context.cursorX < context.cols - 1 && context.cursorX + 1 <= text->data[context.cursorY + context.startY]->size) 
+            if (context.cursorX < context.cols - 1 && context.cursorX + 1 <= text->data[context.cursorY + context.startY]->strlen) 
                 ++(context.cursorX);
             else if (context.cursorX == context.cols - 1) 
             {
@@ -96,6 +94,12 @@ int normalControls(const char c)
                 --context.cursorX;
             }
             break;  
+
+        case 'i':
+            context.state = INSERTMODE;
+            break;
     }
     return 0;  
 }
+
+int insertControls(const char c);
