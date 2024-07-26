@@ -3,6 +3,7 @@
 
 #include <ncurses.h>
 #include "../include/strings.h"
+#include <stdio.h>
 
 #define NORMALMODE 0
 #define INSERTMODE 1

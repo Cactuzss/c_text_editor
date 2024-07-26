@@ -40,7 +40,7 @@ text_t* strings_strToText(string_t* str)
         if (str->data[i] == '\n')
             ++text->size;
 
-    text->data = malloc(sizeof(string_t) * text->size);
+    text->data = malloc(sizeof(charList_t) * text->size);
     if (text->data == NULL) 
     {
         printf("Can not allocate memory for text_t text\n");
@@ -59,7 +59,7 @@ text_t* strings_strToText(string_t* str)
 
         buf[end - start] = 0;
 
-        text->data[current] = strings_construct(buf);
+        text->data[current] = charlist_construct(charnode_construct(buf));
 
         start = end + 1;
         ++current;
@@ -78,7 +78,7 @@ void strings_freeString(string_t* str)
 void strings_freeText(text_t* text)
 {
     for(size_t i = 0; i < text->size; i++)
-        strings_freeString(text->data[i]);
+        charlist_free(text->data[i]);
     free(text->data);
 }
 

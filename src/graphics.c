@@ -1,6 +1,5 @@
 #include "../include/graphics.h"
 #include <ncurses.h>
-#include <stdio.h>
 
 #define LOWERLINE 5
 
@@ -26,7 +25,6 @@ void graphics_init(void)
     init_pair(NORMALBG, COLOR_WHITE, COLOR_BLACK);
     init_pair(WHITEBG, COLOR_BLACK, COLOR_WHITE);
 }
-
 
 context_t* graphics_getContext(void)
 {
@@ -81,8 +79,39 @@ void graphics_displayText(text_t text)
     for(size_t i = context.startY, line = 0; i < text.size && line < context.rows; i++, line++)
     {
         move(line, 0);
-        for(size_t j = context.startX; j < context.cols + context.startX && j < text.data[i]->size; j++)
-            printw("%c", text.data[i]->data[j]);
+        //for(size_t j = context.startX; j < context.cols + context.startX && j < text.data[i]->size; j++)
+        //    printw("%c", text.data[i]->data[j]);
+
+        charNode_t* it = text.data[i]->head;
+        size_t past = 0;
+
+        size_t ind = context.startX;
+        for (size_t i = 0; i <= ind && i < text.data[i]->strlen; i++ )
+        {
+            if (i + it->size - 1 < ind)
+            {
+                --i;
+                i += it->size;
+                past += it->size;
+                it = it->next;
+                continue;
+            }
+        }
+        ind -= past;
+
+        for (size_t j = 0, pos = ind; j < context.cols && j < text.data[i]->strlen; j++)
+        {
+            if (pos == it->size)
+            {
+                pos = 0;
+                it = it->next;
+            }
+
+            printw("%c", it->data[pos]);
+            pos++;
+            continue;
+        }
+
         printw("\n");
     }
         

@@ -2,56 +2,14 @@
 #include "include/graphics.h"
 #include "include/strings.h"
 #include "include/files.h"
-#include "include/charList.h"
 
 int normalControls(const char c);
+int insertControls(const char c);
 
 // context_t context; 
 text_t* text;
-#define arraySize(arr) (sizeof(arr) / sizeof(arr[0]))
-int main()
-{
-    charList_t* lst = charlist_construct(charnode_construct("brown fox the"));
 
-    char toFront[] = "A quick ";
-    for (int i = arraySize(toFront) - 1; i >= 0; i--)
-        charlist_push_front(lst, toFront[i]);
-
-    char toBack[] = " lazy dog";
-    for (size_t i = 0; i < arraySize(toBack) - 1; i++)
-        charlist_push_back(lst, toBack[i]);
-
-    char toInsert[] = "jumps over ";
-    size_t start = arraySize(toFront) + arraySize(toBack);
-    for(size_t i = 0; i < arraySize(toInsert); i++)
-        charlist_insert(lst, start + i, toInsert[i]);
-
-    for(size_t i = 0; i < 6; i++)           // 6 = "quick ".size()
-        charlist_remove(lst, 2);            // 2 if position of quick
-
-    printf("size = %zu;  strlen = %zu\t\n", lst->size, lst->strlen);
-
-    charNode_t* it = lst->head;
-    for(size_t i = 0; i < lst->size; i++)
-    {
-        printf("Block №%zu; size = %d\t", i, it->size);    
-        for (size_t j = 0; j < it->size; j++) printf("%c", it->data[j]);
-        printf("\n");
-        it = it->next;
-    }   
-
-    printf("\n");
-    for(size_t i = 0; i < lst->strlen; i++)
-    {
-        char* c = charlist_at(lst, i);
-        printf("%c", *c);
-    }
-
-    charlist_free(lst);
-}
-#undef arraySize
-
-int m2in(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     if (argc != 2)
     {
@@ -77,7 +35,6 @@ int m2in(int argc, char* argv[])
 
 }
 
-
 int normalControls(const char c)
 {
     switch (c) 
@@ -93,9 +50,9 @@ int normalControls(const char c)
         case 'k': 
             if (context.cursorY != 0) 
             {
-                if (context.cursorX >= text->data[context.cursorY - 1]->size)
+                if (context.cursorX >= text->data[context.cursorY - 1]->strlen)
                 {
-                    context.cursorX = text->data[context.cursorY - 1]->size == 0 ? 0 : text->data[context.cursorY - 1]->size - 1;
+                    context.cursorX = text->data[context.cursorY - 1]->strlen == 0 ? 0 : text->data[context.cursorY - 1]->strlen - 1;
                     context.startX = 0;
                 }
                 --(context.cursorY); 
@@ -111,9 +68,9 @@ int normalControls(const char c)
             {
                 if (context.cursorY + 1 < text->size)
                 {
-                    if (context.cursorX >= text->data[context.cursorY + 1]->size)
+                    if (context.cursorX >= text->data[context.cursorY + 1]->strlen)
                     {
-                        context.cursorX = text->data[context.cursorY + 1]->size == 0 ? 0 : text->data[context.cursorY + 1]->size - 1;
+                        context.cursorX = text->data[context.cursorY + 1]->strlen == 0 ? 0 : text->data[context.cursorY + 1]->strlen - 1;
                         context.startX = 0;
                     }
                     ++(context.cursorY); 
@@ -129,7 +86,7 @@ int normalControls(const char c)
             if (context.cursorY + context.startY >= text->size)
                 break;
 
-            if (context.cursorX < context.cols - 1 && context.cursorX + 1 <= text->data[context.cursorY + context.startY]->size) 
+            if (context.cursorX < context.cols - 1 && context.cursorX + 1 <= text->data[context.cursorY + context.startY]->strlen) 
                 ++(context.cursorX);
             else if (context.cursorX == context.cols - 1) 
             {
@@ -144,3 +101,5 @@ int normalControls(const char c)
     }
     return 0;  
 }
+
+int insertControls(const char c);
